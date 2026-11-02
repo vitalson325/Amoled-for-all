@@ -11,13 +11,12 @@
             --bg-color: #000000;
             --panel-bg: #0C0C0E;
             --panel-modal: #141418;
+            --card-item-bg: #0B0B0C;
             --accent-green: #0E3F11;
             --text-white: #ffffff;
             --text-gray: #777777;
             --border-color: #222226;
             --ring-gold: #c68a3e;
-            /* Эффект матового стекла для кнопок и карточек */
-            --glass-bg: rgba(18, 18, 22, 0.75);
             --glass-border: rgba(40, 40, 48, 0.6);
         }
 
@@ -163,27 +162,27 @@
         .power-icon::before {
             content: '';
             position: absolute;
-            top: 2px;
-            left: 50%;
+            top: 4px;
+            left: 44%;
             transform: translateX(-50%);
-            width: 8px;
-            height: 18px;
+            width: 7px;
+            height: 16px;
             background-color: var(--ring-gold);
-            border-radius: 4px;
-            box-shadow: 0 0 8px var(--ring-gold);
+            border-radius: 3px;
+            box-shadow: 0 0 6px var(--ring-gold);
         }
         .power-icon::after {
             content: '';
             position: absolute;
-            bottom: 0px;
-            left: 50%;
+            bottom: 1px;
+            left: 44%;
             transform: translateX(-50%);
-            width: 30px;
-            height: 30px;
+            width: 27px;
+            height: 27px;
             border: 3px solid var(--ring-gold);
             border-radius: 50%;
             border-top-color: transparent;
-            box-shadow: 0 0 8px var(--ring-gold);
+            box-shadow: 0 0 6px var(--ring-gold);
         }
 
         .action-prompt {
@@ -199,7 +198,7 @@
             width: 100%;
             max-width: 400px;
             height: 60px;
-            background: var(--panel-bg);
+            background: var(--card-item-bg);
             border: 1px solid var(--border-color);
             border-radius: 30px;
             display: flex;
@@ -259,31 +258,33 @@
             display: none;
         }
 
-        /* Блок выбора рабочей папки */
+        /* Блок выбора рабочей папки с подложкой #0B0B0C */
         .folder-capsule {
             width: 100%;
             max-width: 400px;
-            height: 50px;
-            background: rgba(12, 12, 14, 0.6);
-            border: 1px dashed var(--border-color);
-            border-radius: 25px;
+            height: 60px;
+            background: var(--card-item-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
             display: flex;
             align-items: center;
             padding: 0 15px;
             cursor: pointer;
             margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             transition: all 0.2s ease;
         }
         .folder-capsule:active {
             transform: scale(0.98);
         }
         .folder-icon {
-            font-size: 16px;
-            margin-right: 10px;
+            font-size: 18px;
+            margin-right: 12px;
         }
         .folder-title {
-            font-size: 12px;
-            color: var(--text-gray);
+            font-size: 14px;
+            color: var(--text-white);
+            font-weight: 600;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -295,7 +296,7 @@
             width: 100%;
             max-width: 400px;
             height: 130px;
-            background: var(--panel-bg);
+            background: var(--card-item-bg);
             border: 1px solid var(--border-color);
             border-radius: 16px;
             margin-top: 12px;
@@ -373,7 +374,7 @@
             fill: currentColor;
         }
 
-        /* Модальные окна с эффектом матового стекла */
+        /* Модальные окна */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -428,14 +429,11 @@
             overflow-y: auto;
         }
 
-        /* Общие стили кнопок в модалках с матовым стеклом и цветом иконок */
         .glass-btn {
             width: 100%;
             padding: 12px;
             margin-bottom: 10px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: var(--card-item-bg);
             border: 1px solid var(--glass-border);
             color: var(--text-white);
             border-radius: 12px;
@@ -455,7 +453,7 @@
         .glass-input {
             width: 100%;
             padding: 12px;
-            background: rgba(15, 15, 18, 0.8);
+            background: var(--card-item-bg);
             border: 1px solid var(--border-color);
             color: #fff;
             border-radius: 12px;
@@ -465,9 +463,7 @@
         }
 
         .patch-item {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: var(--card-item-bg);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
             padding: 12px;
@@ -480,7 +476,6 @@
 </head>
 <body>
 
-    <!-- Верхняя шапка -->
     <div class="top-header">
         <button class="top-settings-btn" onclick="toggleDropdown(event)">
             <svg viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.65.07-.97 0-.32-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.63c-.04.32-.07.65-.07.97 0 .32.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c-.12.22-.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/></svg>
@@ -496,7 +491,6 @@
     </div>
 
     <div class="main-container">
-        <!-- Круглая кнопка запуска -->
         <div class="power-btn-container">
             <div class="power-btn" onclick="triggerConversion()">
                 <div class="power-icon"></div>
@@ -504,7 +498,6 @@
             <div class="action-prompt" id="actionPrompt">Выберите APK для конвертации</div>
         </div>
 
-        <!-- Капсула выбора APK -->
         <div class="selector-capsule" onclick="triggerFileSelect()">
             <div class="plus-icon-circle">
                 <span class="plus-sign">+</span>
@@ -515,23 +508,20 @@
             <div class="arrow-right">›</div>
         </div>
 
-        <!-- Блок выбора рабочей папки -->
         <div class="folder-capsule" onclick="triggerDirSelect()">
             <span class="folder-icon">📁</span>
-            <span class="folder-title" id="folderTitle">Рабочая папка: не выбрана (по умолчанию)</span>
+            <span class="folder-title" id="folderTitle">Рабочая папка: не выбрана</span>
             <span class="arrow-right">›</span>
         </div>
 
         <input type="file" id="fileInput" accept=".apk">
         <input type="file" id="dirInput" webkitdirectory directory style="display:none;">
 
-        <!-- Логи -->
         <div class="logs-container" id="logsBox">
             [System] Готово к работе. Выберите APK и папку для начала анализа...
         </div>
     </div>
 
-    <!-- Нижний док -->
     <div class="bottom-nav-container">
         <div class="bottom-capsule-bar">
             <div class="active-indicator" id="navIndicator" style="transform: translateX(0%);"></div>
@@ -555,7 +545,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-card">
             <div class="modal-header">
@@ -575,6 +564,18 @@
         const logsBox = document.getElementById('logsBox');
         const settingsDropdown = document.getElementById('settingsDropdown');
         let selectedFile = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.StatusBar) {
+                try {
+                    window.Capacitor.Plugins.StatusBar.setBackgroundColor({ color: '#000000' });
+                    window.Capacitor.Plugins.StatusBar.setStyle({ style: 'DARK' });
+                    window.Capacitor.Plugins.StatusBar.show();
+                } catch (e) {
+                    console.log('StatusBar error:', e);
+                }
+            }
+        });
 
         function toggleDropdown(event) {
             event.stopPropagation();
@@ -649,11 +650,11 @@
                 modalContent.innerHTML = `
                     <p style="color:#888; font-size:13px; margin-bottom:12px;">Обнаруженные иконки для замены:</p>
                     <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:10px; margin-bottom:15px;">
-                        <div style="background:var(--glass-bg); padding:12px; border-radius:12px; text-align:center; border:1px solid var(--glass-border);">
+                        <div style="background:var(--card-item-bg); padding:12px; border-radius:12px; text-align:center; border:1px solid var(--glass-border);">
                             <div style="font-size:28px;">🖼️</div>
                             <div style="font-size:11px; margin-top:5px; color:var(--text-white);">ic_launcher.png</div>
                         </div>
-                        <div style="background:var(--glass-bg); padding:12px; border-radius:12px; text-align:center; border:1px solid var(--glass-border);">
+                        <div style="background:var(--card-item-bg); padding:12px; border-radius:12px; text-align:center; border:1px solid var(--glass-border);">
                             <div style="font-size:28px;">⚙️</div>
                             <div style="font-size:11px; margin-top:5px; color:var(--text-white);">ic_settings.png</div>
                         </div>
