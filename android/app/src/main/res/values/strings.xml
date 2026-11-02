@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AMOLED Maker</string>
+    <string name="title_activity_main">AMOLED Maker</string>
+    <string name="package_name">com.amoled.maker</string>
+    <string name="custom_url_scheme">com.amoled.maker</string>
+</resources>

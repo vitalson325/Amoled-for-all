@@ -1,0 +1,6 @@
+{
+  "appId": "com.amoled.maker",
+  "appName": "AMOLED Maker",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}
