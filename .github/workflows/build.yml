@@ -17,23 +17,24 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Node.js
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
 
-      - name: Install dependencies & sync
-        run: |
-          npm install
-          npx cap sync android
+      - name: Install dependencies
+        run: npm install
 
-      - name: Build Debug APK with Gradle
+      - name: Cap sync
+        run: npx cap sync android
+
+      - name: Build APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
