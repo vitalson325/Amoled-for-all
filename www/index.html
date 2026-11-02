@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- Принудительно задаем черный цвет статус-бара для системных оболочек -->
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>AMOLED Maker</title>
     <style>
         :root {
             --bg-color: #000000;
-            --panel-bg: #161618;
+            --panel-bg: #0C0C0E;
             --panel-modal: #1a1a1a;
             --accent-green: #0E3F11;
             --accent-blue: #0088ff;
             --text-white: #ffffff;
-            --text-gray: #888888;
-            --border-color: #2a2a2a;
+            --text-gray: #777777;
+            --border-color: #222226;
+            --ring-gold: #c68a3e;
         }
 
         * {
@@ -43,26 +43,90 @@
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            padding: 25px 20px;
+            padding: 20px 20px;
             overflow-y: auto;
             padding-bottom: 90px;
         }
 
-        /* Капсульная кнопка выбора APK */
+        .power-btn-container {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .power-btn {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: var(--panel-bg);
+            border: 2px solid var(--ring-gold);
+            outline: 2px solid var(--ring-gold);
+            outline-offset: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(198, 138, 62, 0.2);
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .power-btn:active {
+            transform: scale(0.95);
+        }
+
+        .power-icon {
+            width: 45px;
+            height: 45px;
+            position: relative;
+        }
+        .power-icon::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 18.5px;
+            width: 8px;
+            height: 20px;
+            background-color: var(--ring-gold);
+            border-radius: 4px;
+            box-shadow: 0 0 8px var(--ring-gold);
+        }
+        .power-icon::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 7.5px;
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--ring-gold);
+            border-radius: 50%;
+            border-top-color: transparent;
+            box-shadow: 0 0 8px var(--ring-gold);
+        }
+
+        .action-prompt {
+            margin-top: 18px;
+            font-size: 13px;
+            color: var(--text-gray);
+            text-align: center;
+            letter-spacing: 0.2px;
+        }
+
         .selector-capsule {
             width: 100%;
             max-width: 400px;
-            height: 75px;
+            height: 65px;
             background: var(--panel-bg);
             border: 1px solid var(--border-color);
-            border-radius: 40px;
+            border-radius: 35px;
             display: flex;
             align-items: center;
             padding: 0 10px;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             transition: all 0.2s ease;
-            margin-top: 10px;
+            margin-top: 15px;
         }
 
         .selector-capsule:active {
@@ -70,8 +134,8 @@
         }
 
         .plus-icon-circle {
-            width: 55px;
-            height: 55px;
+            width: 45px;
+            height: 45px;
             background: #111;
             border-radius: 50%;
             display: flex;
@@ -82,11 +146,10 @@
         }
 
         .plus-sign {
-            font-size: 32px;
+            font-size: 26px;
             color: var(--accent-green);
             font-weight: 300;
             line-height: 1;
-            text-shadow: 0 0 5px rgba(14, 63, 17, 0.6);
         }
 
         .capsule-text-area {
@@ -96,7 +159,7 @@
         }
 
         .status-title {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             color: var(--text-white);
             white-space: nowrap;
@@ -104,15 +167,9 @@
             text-overflow: ellipsis;
         }
 
-        .status-subtitle {
-            font-size: 12px;
-            color: var(--text-gray);
-            margin-top: 2px;
-        }
-
         .arrow-right {
             color: var(--text-gray);
-            font-size: 18px;
+            font-size: 16px;
             padding-right: 15px;
         }
 
@@ -120,24 +177,22 @@
             display: none;
         }
 
-        /* Область логов под средней кнопкой */
         .logs-container {
             width: 100%;
             max-width: 400px;
-            height: 160px;
+            height: 150px;
             background: var(--panel-bg);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            margin-top: 20px;
+            margin-top: 15px;
             padding: 12px;
             font-family: monospace;
             font-size: 12px;
-            color: #22a028;
+            color: var(--accent-green);
             overflow-y: auto;
             text-align: left;
         }
 
-        /* Нижняя панель */
         .bottom-nav-container {
             position: fixed;
             bottom: 15px;
@@ -153,7 +208,7 @@
             width: 100%;
             max-width: 420px;
             height: 70px;
-            background: #101012;
+            background: var(--panel-bg);
             border: 1px solid var(--border-color);
             border-radius: 35px;
             display: flex;
@@ -167,8 +222,8 @@
             top: 5px;
             bottom: 5px;
             width: calc(25% - 6px);
-            background: #222226;
-            border: 1px solid #3a3a40;
+            background: #16161a;
+            border: 1px solid #2a2a30;
             border-radius: 30px;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -190,7 +245,7 @@
         }
 
         .nav-item.active {
-            color: #22a028;
+            color: var(--accent-green);
         }
 
         .nav-icon {
@@ -291,13 +346,19 @@
 <body>
 
     <div class="main-container">
+        <div class="power-btn-container">
+            <div class="power-btn" onclick="triggerConversion()">
+                <div class="power-icon"></div>
+            </div>
+            <div class="action-prompt" id="actionPrompt">Выберите APK для конвертации</div>
+        </div>
+
         <div class="selector-capsule" onclick="triggerFileSelect()">
             <div class="plus-icon-circle">
                 <span class="plus-sign">+</span>
             </div>
             <div class="capsule-text-area">
                 <div class="status-title" id="mainTitle">APK не выбран</div>
-                <div class="status-subtitle" id="mainSubtitle">Выберите APK</div>
             </div>
             <div class="arrow-right">›</div>
         </div>
@@ -345,7 +406,7 @@
     <script>
         const fileInput = document.getElementById('fileInput');
         const mainTitle = document.getElementById('mainTitle');
-        const mainSubtitle = document.getElementById('mainSubtitle');
+        const actionPrompt = document.getElementById('actionPrompt');
         const logsBox = document.getElementById('logsBox');
         let selectedFile = null;
 
@@ -353,11 +414,19 @@
             fileInput.click();
         }
 
+        function triggerConversion() {
+            if (!selectedFile) {
+                fileInput.click();
+            } else {
+                logMessage(`[Process] Запуск конвертации файла: ${selectedFile.name}...`);
+            }
+        }
+
         fileInput.addEventListener('change', function(event) {
             if (event.target.files.length > 0) {
                 selectedFile = event.target.files[0];
                 mainTitle.textContent = selectedFile.name;
-                mainSubtitle.textContent = "Нажмите для запуска конвертации";
+                actionPrompt.textContent = "Нажмите для запуска конвертации";
                 logMessage(`[OK] Выбран файл: ${selectedFile.name} (${(selectedFile.size/1024/1024).toFixed(2)} MB)`);
             }
         });
@@ -390,11 +459,11 @@
                     <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-top:10px;">
                         <div style="background:#111; padding:10px; border-radius:8px; text-align:center; border:1px solid #333;">
                             <div style="font-size:24px;">🖼️</div>
-                            <div style="font-size:10px; margin-top:5px; color:#aaa;">ic_launcher.png</div>
+                            <div style="font-size:10px; margin-top:5px; color:#0E3F11; font-weight:bold;">ic_launcher.png</div>
                         </div>
                         <div style="background:#111; padding:10px; border-radius:8px; text-align:center; border:1px solid #333;">
                             <div style="font-size:24px;">⚙️</div>
-                            <div style="font-size:10px; margin-top:5px; color:#aaa;">ic_settings.png</div>
+                            <div style="font-size:10px; margin-top:5px; color:#0E3F11; font-weight:bold;">ic_settings.png</div>
                         </div>
                     </div>
                 `;
@@ -424,15 +493,15 @@
                     <div class="color-card-item">
                         <div>
                             <div style="font-size:13px; font-weight:bold;">card_surface</div>
-                            <div style="font-size:11px; color:#888;">#F5F5F5 ➔ #121212</div>
+                            <div style="font-size:11px; color:#888;">#F5F5F5 ➔ #0C0C0E</div>
                         </div>
-                        <div class="color-preview-box" style="background:#121212; color:#0f0;">Карта</div>
+                        <div class="color-preview-box" style="background:#0C0C0E; color:#0f0;">Карта</div>
                     </div>
                 `;
             } else if (tabName === 'settingsTab') {
                 modalTitle.textContent = "Настройки приложения";
                 modalContent.innerHTML = `
-                    <p style="color:#aaa; font-size:14px;">Версия сборки: 1.1.1 (AMOLED Core)</p>
+                    <p style="color:#aaa; font-size:14px;">Версия сборки: 1.1.2 (AMOLED Core)</p>
                     <p style="color:#aaa; font-size:14px;">GitHub Actions: Активно</p>
                 `;
             }
