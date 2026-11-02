@@ -37,24 +37,57 @@
             background-image: linear-gradient(to bottom, #000 0%, #000 100%);
         }
 
+        /* Верхняя панель с кнопкой Настроек справа */
+        .top-header {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            padding: 12px 20px 0 20px;
+            z-index: 50;
+        }
+
+        .top-settings-btn {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-gray);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            transition: color 0.2s;
+        }
+        .top-settings-btn:active {
+            transform: scale(0.92);
+        }
+        .top-settings-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
         .main-container {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            padding: 20px 20px;
+            padding: 10px 20px;
             overflow-y: auto;
             padding-bottom: 90px;
         }
 
         .power-btn-container {
-            margin-top: 15px;
+            margin-top: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
+        /* Исправленная центрированная круглая кнопка */
         .power-btn {
             width: 110px;
             height: 110px;
@@ -77,17 +110,20 @@
         }
 
         .power-icon {
-            width: 45px;
-            height: 45px;
+            width: 32px;
+            height: 32px;
             position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .power-icon::before {
             content: '';
             position: absolute;
-            top: 4px;
-            left: 18.5px;
+            top: 2px;
+            left: 12px;
             width: 8px;
-            height: 20px;
+            height: 18px;
             background-color: var(--ring-gold);
             border-radius: 4px;
             box-shadow: 0 0 8px var(--ring-gold);
@@ -95,8 +131,8 @@
         .power-icon::after {
             content: '';
             position: absolute;
-            bottom: 2px;
-            left: 7.5px;
+            bottom: 0px;
+            left: 1px;
             width: 30px;
             height: 30px;
             border: 3px solid var(--ring-gold);
@@ -193,6 +229,7 @@
             text-align: left;
         }
 
+        /* Нижняя панель с эффектом матового стекла и точным выравниванием */
         .bottom-nav-container {
             position: fixed;
             bottom: 15px;
@@ -208,7 +245,9 @@
             width: 100%;
             max-width: 420px;
             height: 70px;
-            background: var(--panel-bg);
+            background: rgba(12, 12, 14, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
             border-radius: 35px;
             display: flex;
@@ -222,7 +261,7 @@
             top: 5px;
             bottom: 5px;
             width: calc(25% - 6px);
-            background: #16161a;
+            background: #18181c;
             border: 1px solid #2a2a30;
             border-radius: 30px;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -246,6 +285,7 @@
 
         .nav-item.active {
             color: var(--accent-green);
+            font-weight: 600;
         }
 
         .nav-icon {
@@ -307,7 +347,7 @@
             overflow-y: auto;
         }
 
-        .color-card-item {
+        .patch-item {
             background: #111;
             border: 1px solid var(--border-color);
             border-radius: 10px;
@@ -316,17 +356,6 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-        }
-
-        .color-preview-box {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            border: 1px solid #444;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
         }
 
         .preset-btn {
@@ -345,7 +374,15 @@
 </head>
 <body>
 
+    <!-- Верхняя шапка с кнопкой настроек справа -->
+    <div class="top-header">
+        <button class="top-settings-btn" onclick="openTab(3, 'settingsTab')">
+            <svg viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.65.07-.97 0-.32-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.63c-.04.32-.07.65-.07.97 0 .32.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/></svg>
+        </button>
+    </div>
+
     <div class="main-container">
+        <!-- Круглая кнопка запуска -->
         <div class="power-btn-container">
             <div class="power-btn" onclick="triggerConversion()">
                 <div class="power-icon"></div>
@@ -353,6 +390,7 @@
             <div class="action-prompt" id="actionPrompt">Выберите APK для конвертации</div>
         </div>
 
+        <!-- Капсула выбора APK -->
         <div class="selector-capsule" onclick="triggerFileSelect()">
             <div class="plus-icon-circle">
                 <span class="plus-sign">+</span>
@@ -365,11 +403,13 @@
 
         <input type="file" id="fileInput" accept=".apk">
 
+        <!-- Логи -->
         <div class="logs-container" id="logsBox">
             [System] Готово к работе. Выберите APK для начала анализа...
         </div>
     </div>
 
+    <!-- Нижняя панель с вкладкой "Дополнительно" (патчи) на месте настроек -->
     <div class="bottom-nav-container">
         <div class="bottom-capsule-bar">
             <div class="active-indicator" id="navIndicator" style="transform: translateX(0%);"></div>
@@ -386,13 +426,14 @@
                 <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19h4.15c1.07.62 2.34 1 3.5 1 4.97 0 9-4.03 9-9s-4.03-9-9-9m0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7m1-11h-2v4H8v2h3v4h2v-4h3v-2h-3V8Z"/></svg>
                 Цвета
             </button>
-            <button class="nav-item" onclick="switchTab(3, 'settingsTab')">
-                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.65.07-.97 0-.32-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.63c-.04.32-.07.65-.07.97 0 .32.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/></svg>
-                Настройки
+            <button class="nav-item" onclick="switchTab(3, 'patchesTab')">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                Патчи
             </button>
         </div>
     </div>
 
+    <!-- Модальное окно -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-card">
             <div class="modal-header">
@@ -482,26 +523,47 @@
                     <hr style="border-color:#222; margin:15px 0;">
                     <p style="color:#888; font-size:12px; margin-bottom:10px;">Параметры палитры с превью:</p>
                     
-                    <div class="color-card-item">
+                    <div class="patch-item">
                         <div>
                             <div style="font-size:13px; font-weight:bold;">background_color</div>
                             <div style="font-size:11px; color:#888;">#FFFFFF ➔ #000000</div>
                         </div>
-                        <div class="color-preview-box" style="background:#000000; color:#fff;">Фон</div>
+                        <div style="background:#000000; color:#fff; width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:10px;">Фон</div>
+                    </div>
+                `;
+            } else if (tabName === 'patchesTab') {
+                modalTitle.textContent = "Дополнительные патчи";
+                modalContent.innerHTML = `
+                    <p style="color:#888; font-size:12px; margin-bottom:12px;">Инструменты модификации и сборки:</p>
+                    
+                    <div class="patch-item">
+                        <div>
+                            <div style="font-size:13px; font-weight:bold;">📝 Изменить Package Name</div>
+                            <div style="font-size:11px; color:#888;">Клонирование / Смена ID пакета</div>
+                        </div>
+                        <button onclick="logMessage('[Patch] Выбрана смена Package Name')" style="background:#222; border:1px solid var(--accent-green); color:#fff; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:11px;">Изменить</button>
                     </div>
 
-                    <div class="color-card-item">
+                    <div class="patch-item">
                         <div>
-                            <div style="font-size:13px; font-weight:bold;">card_surface</div>
-                            <div style="font-size:11px; color:#888;">#F5F5F5 ➔ #0C0C0E</div>
+                            <div style="font-size:13px; font-weight:bold;">🔏 Переподписать APK</div>
+                            <div style="font-size:11px; color:#888;">Подпись тестовым ключом debug.keystore</div>
                         </div>
-                        <div class="color-preview-box" style="background:#0C0C0E; color:#0f0;">Карта</div>
+                        <button onclick="logMessage('[Patch] Запущена переподпись APK')" style="background:#222; border:1px solid var(--accent-green); color:#fff; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:11px;">Патч</button>
+                    </div>
+
+                    <div class="patch-item">
+                        <div>
+                            <div style="font-size:13px; font-weight:bold;">🧹 Очистка мусора и трекеров</div>
+                            <div style="font-size:11px; color:#888;">Удаление лишних языков и метаданных</div>
+                        </div>
+                        <button onclick="logMessage('[Patch] Выполнена очистка ресурсов')" style="background:#222; border:1px solid var(--accent-green); color:#fff; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:11px;">Очистить</button>
                     </div>
                 `;
             } else if (tabName === 'settingsTab') {
                 modalTitle.textContent = "Настройки приложения";
                 modalContent.innerHTML = `
-                    <p style="color:#aaa; font-size:14px;">Версия сборки: 1.1.2 (AMOLED Core)</p>
+                    <p style="color:#aaa; font-size:14px;">Версия сборки: 1.1.3 (AMOLED Core)</p>
                     <p style="color:#aaa; font-size:14px;">GitHub Actions: Активно</p>
                 `;
             }
