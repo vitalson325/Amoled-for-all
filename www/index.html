@@ -2,99 +2,801 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AMOLED Maker</title>
     <style>
+        :root {
+            --bg-color: #000000;
+            --panel-bg: #121212;
+            --panel-modal: #1a1a1a;
+            --accent-green: #00ff66;
+            --accent-blue: #0088ff;
+            --text-white: #ffffff;
+            --text-gray: #888888;
+            --border-color: #2a2a2a;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
-            background-color: #000000;
-            color: #ffffff;
+            background-color: var(--bg-color);
+            color: var(--text-white);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background-image: linear-gradient(to bottom, #000 0%, #000 100%);
+        }
+
+        .main-container {
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
+            justify-content: flex-start;
+            padding: 20px;
+            overflow-y: auto;
+            padding-bottom: 90px;
         }
-        h1 {
-            color: #00ff66;
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-        p {
-            color: #888888;
-            font-size: 14px;
-            margin-bottom: 40px;
-        }
-        .btn {
-            width: 80%;
-            max-width: 300px;
-            padding: 14px;
-            margin: 10px 0;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: center;
-            border: 2px solid;
-            background: transparent;
-        }
-        .btn-select {
-            color: #00ff66;
-            border-color: #00ff66;
-        }
-        .btn-process {
-            color: #0088ff;
-            border-color: #0088ff;
-        }
-        #status {
+
+        /* Центральная кнопка запуска */
+        .power-btn-container {
             margin-top: 30px;
-            color: #ffaa00;
-            font-size: 14px;
-            text-align: center;
-            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        /* Скрываем стандартный инпут выбора файла */
+
+        .power-btn {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: var(--panel-bg);
+            border: 3px solid var(--accent-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.2);
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .power-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Неоновая иконка питания с плюсом */
+        .power-icon {
+            width: 50px;
+            height: 50px;
+            position: relative;
+        }
+        .power-icon::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 21px;
+            width: 8px;
+            height: 22px;
+            background-color: var(--accent-green);
+            border-radius: 4px;
+            box-shadow: 0 0 10px var(--accent-green);
+        }
+        .power-icon::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 10px;
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--accent-green);
+            border-radius: 50%;
+            border-top-color: transparent;
+            box-shadow: 0 0 10px var(--accent-green);
+        }
+
+        .status-title {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-white);
+            text-align: center;
+        }
+
+        .status-subtitle {
+            margin-top: 5px;
+            font-size: 13px;
+            color: var(--text-gray);
+            text-align: center;
+            cursor: pointer;
+        }
+
+        /* Скрытый инпут */
         #fileInput {
             display: none;
+        }
+
+        /* Терминал / область логов в реальном времени */
+        .logs-container {
+            width: 100%;
+            max-width: 400px;
+            height: 140px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-top: 25px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--accent-green);
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        /* Нижнее навигационное меню */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 75px;
+            background: var(--panel-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: env(safe-area-inset-bottom);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: transparent;
+            border: none;
+            color: var(--text-gray);
+            cursor: pointer;
+            flex: 1;
+            font-size: 11px;
+        }
+
+        .nav-item.active {
+            color: var(--accent-green);
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+            fill: currentColor;
+        }
+
+        /* Планшетные модальные окна (вкладки) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            padding: 20px;
+        }
+
+        .modal-card {
+            width: 90%;
+            max-width: 420px;
+            height: 80vh;
+            background: var(--panel-modal);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-white);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-gray);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        /* Стили для вкладки Цвета с превью */
+        .color-card-item {
+            background: #111;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .color-preview-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .preset-btn {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #1f1f1f;
+            border: 1px solid var(--accent-green);
+            color: var(--text-white);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-    <h1>AMOLED Maker</h1>
-    <p>Конвертация APK в глубокий черный стиль</p>
+    <div class="main-container">
+        <!-- Главная кнопка выбора и запуска -->
+        <div class="power-btn-container">
+            <div class="power-btn" onclick="triggerFileSelect()">
+                <div class="power-icon"></div>
+            </div>
+            <div class="status-title" id="mainTitle">APK не выбран</div>
+            <div class="status-subtitle" id="mainSubtitle" onclick="triggerFileSelect()">Выберите APK</div>
+        </div>
 
-    <!-- Скрытый системный выбор файлов -->
-    <input type="file" id="fileInput" accept=".apk">
+        <input type="file" id="fileInput" accept=".apk">
 
-    <!-- Кнопки интерфейса -->
-    <button class="btn btn-select" onclick="document.getElementById('fileInput').click()">Выбрать APK</button>
-    <button class="btn btn-process" onclick="startProcess()">Сделать AMOLED</button>
+        <!-- Область логов в реальном времени -->
+        <div class="logs-container" id="logsBox">
+            [System] Готово к работе. Выберите APK для начала анализа...
+        </div>
+    </div>
 
-    <div id="status">Готово к работе</div>
+    <!-- Нижняя панель навигации -->
+    <div class="bottom-nav">
+        <button class="nav-item active" onclick="openTab('iconsTab')">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 4h7v7H4V4m9 0h7v7h-7V4M4 13h7v7H4v-7m9 0h7v7h-7v-7Z"/></svg>
+            Иконки
+        </button>
+        <button class="nav-item" onclick="openTab('textTab')">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 5v14h18V5H3m16 12H5V7h14v10M7 9h10v2H7V9m0 4h7v2H7v-2Z"/></svg>
+            Текст
+        </button>
+        <button class="nav-item" onclick="openTab('colorsTab')">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19h4.15c1.07.62 2.34 1 3.5 1 4.97 0 9-4.03 9-9s-4.03-9-9-9m0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7m1-11h-2v4H8v2h3v4h2v-4h3v-2h-3V8Z"/></svg>
+            Цвета
+        </button>
+        <button class="nav-item" onclick="openTab('settingsTab')">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.65.07-.97 0-.32-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.63c-.04.32-.07.65-.07.97 0 .32.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/></svg>
+            Настройки
+        </button>
+    </div>
+
+    <!-- Модальные вкладки (Планшетный интерфейс) -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <span id="modalTitle">Вкладка</span>
+                <button class="close-modal" onclick="closeTab()">×</button>
+            </div>
+            <div class="modal-body" id="modalContent">
+                <!-- Контент динамически -->
+            </div>
+        </div>
+    </div>
 
     <script>
         const fileInput = document.getElementById('fileInput');
-        const statusDiv = document.getElementById('status');
+        const mainTitle = document.getElementById('mainTitle');
+        const mainSubtitle = document.getElementById('mainSubtitle');
+        const logsBox = document.getElementById('logsBox');
         let selectedFile = null;
+
+        function triggerFileSelect() {
+            fileInput.click();
+        }
 
         fileInput.addEventListener('change', function(event) {
             if (event.target.files.length > 0) {
                 selectedFile = event.target.files[0];
-                statusDiv.textContent = `Выбран файл: ${selectedFile.name}`;
+                mainTitle.textContent = selectedFile.name;
+                mainSubtitle.textContent = "Нажмите для запуска конвертации";
+                logMessage(`[OK] Выбран файл: ${selectedFile.name} (${(selectedFile.size/1024/1024).toFixed(2)} MB)`); } });  function logMessage(text) { logsBox.innerHTML += `<br>${text}`;
+            logsBox.scrollTop = logsBox.scrollHeight;
+        }
+
+        // Управление модальными вкладками
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+
+        function openTab(tabName) {
+            modalOverlay.style.display = 'flex';
+            
+            if (tabName === 'iconsTab') {
+                modalTitle.textContent = "Иконки APK";
+                modalContent.innerHTML = `
+                    <p style="color:#888; font-size:13px;">Обнаруженные иконки интерфейса для замены:</p>
+                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-top:10px;">
+                        <div style="background:#111; padding:10px; border-radius:8px; text-align:center; border:1px solid #333;">
+                            <div style="font-size:24px;">🖼️</div>
+                            <div style="font-size:10px; margin-top:5px; color:#aaa;">ic_launcher.png</div>
+                        </div>
+                        <div style="background:#111; padding:10px; border-radius:8px; text-align:center; border:1px solid #333;">
+                            <div style="font-size:24px;">⚙️</div>
+                            <div style="font-size:10px; margin-top:5px; color:#aaa;">ic_settings.png</div>
+                        </div>
+                    </div>
+                `;
+            } else if (tabName === 'textTab') {
+                modalTitle.textContent = "Поиск и замена текста";
+                modalContent.innerHTML = `
+                    <input type="text" placeholder="Поиск строки в APK..." style="width:100%; padding:10px; background:#111; border:1px solid #333; color:#fff; border-radius:8px; margin-bottom:10px;">
+                    <input type="text" placeholder="Заменить на..." style="width:100%; padding:10px; background:#111; border:1px solid #333; color:#fff; border-radius:8px; margin-bottom:10px;">
+                    <button style="width:100%; padding:10px; background:var(--accent-blue); border:none; color:#fff; border-radius:8px; font-weight:bold;">Найти и заменить</button>
+                `;
+            } else if (tabName === 'colorsTab') {
+                modalTitle.textContent = "Цвета: AMOLED Оптимизация";
+                modalContent.innerHTML = `
+                    <div class="preset-btn" onclick="logMessage('[Preset] Применена умная инверсия белого')">⚡ Умная инверсия белого (#FFF -> #000)</div>
+                    <div class="preset-btn" onclick="logMessage('[Preset] Акценты сохранены')">🎨 Сохранить фирменные акценты</div>
+                    <hr style="border-color:#222; margin:15px 0;">
+                    <p style="color:#888; font-size:12px; margin-bottom:10px;">Параметры палитры с превью:</p>
+                    
+                    <div class="color-card-item">
+                        <div>
+                            <div style="font-size:13px; font-weight:bold;">background_color</div>
+                            <div style="font-size:11px; color:#888;">#FFFFFF ➔ #000000</div>
+                        </div>
+                        <div class="color-preview-box" style="background:#000000; color:#fff;">Фон</div>
+                    </div>
+
+                    <div class="color-card-item">
+                        <div>
+                            <div style="font-size:13px;
+cd ~/AmoledMakerApp && cat << 'EOF' > www/index.html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AMOLED Maker</title>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --panel-bg: #121212;
+            --panel-modal: #1a1a1a;
+            --accent-green: #00ff66;
+            --accent-blue: #0088ff;
+            --text-white: #ffffff;
+            --text-gray: #888888;
+            --border-color: #2a2a2a;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-white);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background-image: linear-gradient(to bottom, #000 0%, #000 100%);
+        }
+
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 20px;
+            overflow-y: auto;
+            padding-bottom: 90px;
+        }
+
+        .power-btn-container {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .power-btn {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: var(--panel-bg);
+            border: 3px solid var(--accent-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.2);
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .power-btn:active {
+            transform: scale(0.95);
+        }
+
+        .power-icon {
+            width: 50px;
+            height: 50px;
+            position: relative;
+        }
+        .power-icon::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 21px;
+            width: 8px;
+            height: 22px;
+            background-color: var(--accent-green);
+            border-radius: 4px;
+            box-shadow: 0 0 10px var(--accent-green);
+        }
+        .power-icon::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 10px;
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--accent-green);
+            border-radius: 50%;
+            border-top-color: transparent;
+            box-shadow: 0 0 10px var(--accent-green);
+        }
+
+        .status-title {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-white);
+            text-align: center;
+        }
+
+        .status-subtitle {
+            margin-top: 5px;
+            font-size: 13px;
+            color: var(--text-gray);
+            text-align: center;
+            cursor: pointer;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .logs-container {
+            width: 100%;
+            max-width: 400px;
+            height: 140px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-top: 25px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--accent-green);
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 75px;
+            background: var(--panel-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: env(safe-area-inset-bottom);
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: transparent;
+            border: none;
+            color: var(--text-gray);
+            cursor: pointer;
+            flex: 1;
+            font-size: 11px;
+        }
+
+        .nav-item.active {
+            color: var(--accent-green);
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+            fill: currentColor;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            padding: 20px;
+        }
+
+        .modal-card {
+            width: 90%;
+            max-width: 420px;
+            height: 80vh;
+            background: var(--panel-modal);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-white);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-gray);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .color-card-item {
+            background: #111;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .color-preview-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .preset-btn {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #1f1f1f;
+            border: 1px solid var(--accent-green);
+            color: var(--text-white);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="power-btn-container">
+            <div class="power-btn" onclick="triggerFileSelect()">
+                <div class="power-icon"></div>
+            </div>
+            <div class="status-title" id="mainTitle">APK не выбран</div>
+            <div class="status-subtitle" id="mainSubtitle" onclick="triggerFileSelect()">Выберите APK</div>
+        </div>
+
+        <input type="file" id="fileInput" accept=".apk">
+
+        <div class="logs-container" id="logsBox">
+            [System] Готово к работе. Выберите APK для начала анализа...
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-item active" onclick="openTab('iconsTab')">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 4h7v7H4V4m9 0h7v7h-7V4M4 13h7v7H4v-7m9 0h7v7h-7v-7Z"/></svg>
+            Иконки
+        </button>
+        <button class="nav-item" onclick="openTab('textTab')">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 5v14h18V5H3m16 12H5V7h14v10M7 9h10v2H7V9m0 4h7v2H7v-2Z"/></svg>
+            Текст
+        </button>
+        <button class="nav-item" onclick="openTab('colorsTab')">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19h4.15c1.07.62 2.34 1 3.5 1 4.97 0 9-4.03 9-9s-4.03-9-9-9m0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7m1-11h-2v4H8v2h3v4h2v-4h3v-2h-3V8Z"/></svg>
+            Цвета
+        </button>
+        <button class="nav-item" onclick="openTab('settingsTab')">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.65.07-.97 0-.32-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.63c-.04.32-.07.65-.07.97 0 .32.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/></svg>
+            Настройки
+        </button>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <span id="modalTitle">Вкладка</span>
+                <button class="close-modal" onclick="closeTab()">×</button>
+            </div>
+            <div class="modal-body" id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const mainTitle = document.getElementById('mainTitle');
+        const mainSubtitle = document.getElementById('mainSubtitle');
+        const logsBox = document.getElementById('logsBox');
+        let selectedFile = null;
+
+        function triggerFileSelect() {
+            fileInput.click();
+        }
+
+        fileInput.addEventListener('change', function(event) {
+            if (event.target.files.length > 0) {
+                selectedFile = event.target.files[0];
+                mainTitle.textContent = selectedFile.name;
+                mainSubtitle.textContent = "Нажмите для запуска конвертации";
+                logMessage(`[OK] Выбран файл: ${selectedFile.name} (${(selectedFile.size/1024/1024).toFixed(2)} MB)`);
             }
         });
 
-        function startProcess() {
-            if (!selectedFile) {
-                statusDiv.textContent = 'Сначала выберите APK-файл!';
-                return;
-            }
-            statusDiv.textContent = `Обработка файла: ${selectedFile.name}...`;
-            // Здесь в будущем добавим логику отправки / обработки
+        function logMessage(text) {
+            logsBox.innerHTML += `<br>${text}`;
+            logsBox.scrollTop = logsBox.scrollHeight;
         }
-    </script>
 
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+
+        function openTab(tabName) {
+            modalOverlay.style.display = 'flex';
+            
+            if (tabName === 'iconsTab') {
+                modalTitle.textContent = "Иконки APK";
+                modalContent.innerHTML = `
+                    <p style="color:#888; font-size:13px;">Обнаруженные иконки интерфейса для замены:</p>
+                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-top:10px;">
+                        <div style="background:#111; padding:10px; border-radius:8px; text-align:center; border:1px solid #333;">
+                            <div style="font-size:24px;">🖼️</div>
+                            <div style="font-size:10px; margin-top:5px; color:#aaa;">ic_launcher.png</div>
+                        </div>
+                        <div style="background:#111; padding:10px; border-radius:8px; text-align:center; border:1px solid #333;">
+                            <div style="font-size:24px;">⚙️</div>
+                            <div style="font-size:10px; margin-top:5px; color:#aaa;">ic_settings.png</div>
+                        </div>
+                    </div>
+                `;
+            } else if (tabName === 'textTab') {
+                modalTitle.textContent = "Поиск и замена текста";
+                modalContent.innerHTML = `
+                    <input type="text" placeholder="Поиск строки в APK..." style="width:100%; padding:10px; background:#111; border:1px solid #333; color:#fff; border-radius:8px; margin-bottom:10px;">
+                    <input type="text" placeholder="Заменить на..." style="width:100%; padding:10px; background:#111; border:1px solid #333; color:#fff; border-radius:8px; margin-bottom:10px;">
+                    <button style="width:100%; padding:10px; background:var(--accent-blue); border:none; color:#fff; border-radius:8px; font-weight:bold;">Найти и заменить</button>
+                `;
+            } else if (tabName === 'colorsTab') {
+                modalTitle.textContent = "Цвета: AMOLED Оптимизация";
+                modalContent.innerHTML = `
+                    <div class="preset-btn" onclick="logMessage('[Preset] Применена умная инверсия белого')">⚡ Умная инверсия белого (#FFF -> #000)</div>
+                    <div class="preset-btn" onclick="logMessage('[Preset] Акценты сохранены')">🎨 Сохранить фирменные акценты</div>
+                    <hr style="border-color:#222; margin:15px 0;">
+                    <p style="color:#888; font-size:12px; margin-bottom:10px;">Параметры палитры с превью:</p>
+                    
+                    <div class="color-card-item">
+                        <div>
+                            <div style="font-size:13px; font-weight:bold;">background_color</div>
+                            <div style="font-size:11px; color:#888;">#FFFFFF ➔ #000000</div>
+                        </div>
+                        <div class="color-preview-box" style="background:#000000; color:#fff;">Фон</div>
+                    </div>
+
+                    <div class="color-card-item">
+                        <div>
+                            <div style="font-size:13px; font-weight:bold;">card_surface</div>
+                            <div style="font-size:11px; color:#888;">#F5F5F5 ➔ #121212</div>
+                        </div>
+                        <div class="color-preview-box" style="background:#121212; color:#0f0;">Карта</div>
+                    </div>
+                `;
+            } else if (tabName === 'settingsTab') {
+                modalTitle.textContent = "Настройки приложения";
+                modalContent.innerHTML = `
+                    <p style="color:#aaa; font-size:14px;">Версия сборки: 1.0.6 (AMOLED Core)</p>
+                    <p style="color:#aaa; font-size:14px;">GitHub Actions: Активно</p>
+                `;
+            }
+        }
+
+        function closeTab() {
+            modalOverlay.style.display = 'none';
+        }
+
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) closeTab();
+        });
+    </script>
 </body>
 </html>
