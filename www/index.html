@@ -73,6 +73,12 @@
         .glass-btn.primary { background: rgba(198, 138, 62, 0.2); color: var(--accent-gold); }
         .glass-input { width: 100%; padding: 12px; margin-bottom: 12px; outline: none; font-size: 13px; }
         .patch-item { padding: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+    
+        /* Анимация и структура горизонтального листания вкладок */
+        .tabs-viewport { width: 100%; overflow: hidden; position: relative; }
+        .tabs-track { display: flex; width: 400%; transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1); will-change: transform; }
+        .tab-pane { width: 25%; flex-shrink: 0; box-sizing: border-box; }
+    
     </style>
 </head>
 <body>
