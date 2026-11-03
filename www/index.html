@@ -2,341 +2,230 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#000000">
-    <title>AMOLED Maker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AmoledMakerApp</title>
     <style>
         :root {
             --bg-color: #000000;
-            --panel-modal: #141418;
-            --card-item-bg: #0B0B0C;
-            --accent-gold: #c68a3e;
-            --text-white: #ffffff;
-            --text-gray: #777777;
-            --border-color: #222226;
+            --card-bg: rgba(18, 18, 18, 0.75);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #aaaaaa;
+            --accent-color: #00ff66;
+            --accent-hover: #00cc52;
         }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-color); color: var(--text-white); font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        
-        .app-header { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; position: relative; z-index: 50; }
-        .app-title { font-size: 24px; font-weight: 700; }
-        
-        .header-icon-btn { background: var(--card-item-bg); border: 1px solid var(--accent-gold); border-radius: 50%; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; color: var(--accent-gold); cursor: pointer; box-shadow: 0 2px 10px rgba(198, 138, 62, 0.2); }
-        
-        .dropdown-menu { position: absolute; top: 65px; right: 20px; width: 230px; background: var(--panel-modal); border: 1px solid var(--accent-gold); border-radius: 16px; display: none; flex-direction: column; padding: 6px; z-index: 300; box-shadow: 0 10px 30px rgba(0,0,0,0.9); }
-        .dropdown-item { padding: 11px 14px; font-size: 13px; color: var(--text-white); border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: background 0.2s; }
-        .dropdown-item:hover { background: #1f1f26; color: var(--accent-gold); }
-        .dropdown-item svg { width: 18px; height: 18px; stroke: var(--accent-gold); fill: none; stroke-width: 2; flex-shrink: 0; }
 
-        .main-container { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 5px 20px; overflow-y: auto; padding-bottom: 110px; }
-        
-        .power-btn-container { margin-top: 15px; display: flex; flex-direction: column; align-items: center; }
-        .power-btn { width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle, #1a1a22 0%, #0c0c0e 100%); border: 2px solid var(--accent-gold); outline: 2px solid var(--accent-gold); outline-offset: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; box-shadow: 0 0 25px rgba(198, 138, 62, 0.25); }
-        .power-icon { width: 36px; height: 36px; position: relative; }
-        .power-icon::before { content: ''; position: absolute; top: 4px; left: 44%; transform: translateX(-50%); width: 8px; height: 16px; background-color: var(--accent-gold); border-radius: 3px; }
-        .power-icon::after { content: ''; position: absolute; bottom: 0; left: 44%; transform: translateX(-50%); width: 30px; height: 30px; border: 3px solid var(--accent-gold); border-radius: 50%; border-top-color: transparent; }
-        
-        .connection-status { margin-top: 18px; font-size: 15px; font-weight: 600; text-align: center; }
-        .action-prompt { margin-top: 4px; font-size: 12px; color: var(--text-gray); text-align: center; }
-        
-        .card-capsule { width: 100%; max-width: 400px; background: var(--card-item-bg); border: 1px solid var(--border-color); border-radius: 20px; display: flex; align-items: center; padding: 12px 16px; cursor: pointer; margin-top: 15px; }
-        .card-icon-box { width: 40px; height: 40px; background: #141418; border-radius: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--accent-gold); color: var(--accent-gold); }
-        .card-icon-box svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
-        
-        .card-text-area { flex: 1; padding-left: 14px; overflow: hidden; }
-        .card-subtitle { font-size: 11px; color: var(--text-gray); text-transform: uppercase; }
-        .card-title { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .arrow-right { color: var(--text-gray); font-size: 16px; padding-left: 10px; }
-        
-        .action-pill-btn { width: 100%; max-width: 400px; height: 52px; background: var(--card-item-bg); border: 1px solid var(--accent-gold); border-radius: 26px; display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--accent-gold); font-weight: 600; cursor: pointer; margin-top: 12px; }
-        
-        .logs-container { width: 100%; max-width: 400px; height: 120px; background: var(--card-item-bg); border: 1px solid var(--border-color); border-radius: 16px; margin-top: 15px; padding: 12px; font-family: monospace; font-size: 11px; color: #115314; overflow-y: auto; text-align: left; }
-        #fileInput, #dirInput { display: none; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
 
-        .bottom-nav-container { position: fixed; bottom: 15px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 250; pointer-events: auto; }
-        .bottom-capsule-bar { width: 100%; max-width: 380px; height: 68px; background: rgba(12, 12, 14, 0.92); backdrop-filter: blur(16px); border: 1px solid var(--border-color); border-radius: 34px; display: flex; align-items: center; position: relative; padding: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.9); pointer-events: auto; }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
 
-        .active-indicator { position: absolute; top: 4px; bottom: 4px; width: calc(25% - 2px); left: 4px; background: #18181c; border: 1px solid var(--accent-gold); border-radius: 26px; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; background: transparent; border: none; color: var(--text-gray); cursor: pointer; flex: 1; height: 100%; font-size: 11px; position: relative; z-index: 2; transition: color 0.2s; }
-        .nav-item.active { color: var(--accent-gold); font-weight: 600; }
-        .nav-icon { width: 22px; height: 22px; margin-bottom: 3px; stroke: currentColor; fill: none; stroke-width: 2; }
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+        }
 
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); display: none; justify-content: center; align-items: flex-end; z-index: 200; padding: 0 15px 95px 15px; }
-        .modal-card { width: 100%; max-width: 420px; background: rgba(20, 20, 24, 0.98); border: 1px solid var(--accent-gold); border-radius: 26px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.9); }
-        .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: bold; }
-        .close-modal { background: none; border: none; color: var(--text-gray); font-size: 22px; cursor: pointer; }
-        .modal-body { padding: 15px; max-height: 65vh; overflow-y: auto; }
-        
-        .modal-body .card-capsule, .modal-body .glass-btn, .modal-body .glass-input, .modal-body .patch-item { border: 1px solid var(--accent-gold) !important; background: var(--card-item-bg); border-radius: 14px; color: var(--text-white); }
-        .glass-btn { width: 100%; padding: 12px; margin-bottom: 10px; font-weight: 600; cursor: pointer; text-align: center; }
-        .glass-btn.primary { background: rgba(198, 138, 62, 0.2); color: var(--accent-gold); }
-        .glass-input { width: 100%; padding: 12px; margin-bottom: 12px; outline: none; font-size: 13px; }
-        .patch-item { padding: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
-    
-        /* Анимация и структура горизонтального листания вкладок */
-        .tabs-viewport { width: 100%; overflow: hidden; position: relative; }
-        .tabs-track { display: flex; width: 400%; transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1); will-change: transform; }
-        .tab-pane { width: 25%; flex-shrink: 0; box-sizing: border-box; }
-    
+        h1 {
+            font-size: 20px;
+            margin: 0 0 12px 0;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin: 0 0 16px 0;
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: #000000;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .btn:active {
+            background-color: var(--accent-hover);
+        }
+
+        /* Скрываем системный инпут файлов */
+        #fileInput {
+            display: none;
+        }
+
+        /* Модальное окно */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: rgba(26, 26, 26, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 24px;
+            width: 100%;
+            max-width: 320px;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.9);
+            transform: scale(0.95);
+            transition: transform 0.25s ease;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+        }
+
+        .file-name-display {
+            color: var(--accent-color);
+            font-family: monospace;
+            font-size: 13px;
+            word-break: break-all;
+            background: rgba(0, 255, 102, 0.05);
+            border: 1px solid rgba(0, 255, 102, 0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin: 12px 0 20px 0;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
     </style>
 </head>
 <body>
 
-    <div class="app-header">
-        <div class="app-title">AMOLED Maker</div>
-        <button class="header-icon-btn" onclick="toggleSettingsDropdown(event)">
-            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.65.07-.97 0-.32-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.63c-.04.32-.07.65-.07.97 0 .32.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/></svg>
-        </button>
-
-        <div class="dropdown-menu" id="settingsDropdown">
-            <div class="dropdown-item" onclick="execMenuAction('Clear Cache')">
-                <svg viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                Очистить кэш
-            </div>
-            <div class="dropdown-item" onclick="execMenuAction('Export Logs')">
-                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                Экспорт логов
-            </div>
-            <div style="height:1px;background:var(--border-color);margin:4px 0;"></div>
-            <div class="dropdown-item" onclick="execMenuAction('Check Updates')">
-                <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-                Проверить обновления
-            </div>
-            <div class="dropdown-item" onclick="execMenuAction('About')">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                О программе
-            </div>
+    <div class="container">
+        <div class="card">
+            <h1>AmoledMakerApp</h1>
+            <p>Превратите интерфейс вашего APK в глубокий черный стиль для AMOLED-экранов.</p>
+            <button class="btn" id="selectBtn">Выбрать APK файл</button>
         </div>
     </div>
 
-    <div class="main-container">
-        <div class="power-btn-container">
-            <div class="power-btn" onclick="triggerConversion()"><div class="power-icon"></div></div>
-            <div class="connection-status">Готово к конвертации</div>
-            <div class="action-prompt">Нажмите кнопку, чтобы запустить процесс</div>
-        </div>
+    <!-- Скрытый инпут для выбора файлов -->
+    <input type="file" id="fileInput" accept=".apk">
 
-        <div class="card-capsule" onclick="triggerFileSelect()">
-            <div class="card-icon-box">
-                <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-            </div>
-            <div class="card-text-area"><div class="card-subtitle">Целевой APK</div><div class="card-title" id="mainTitle">APK не выбран</div></div>
-            <div class="arrow-right">›</div>
-        </div>
-
-        <div class="card-capsule" onclick="triggerDirSelect()">
-            <div class="card-icon-box">
-                <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-            </div>
-            <div class="card-text-area"><div class="card-subtitle">Директория</div><div class="card-title" id="folderTitle">Рабочая папка: не выбрана</div></div>
-            <div class="arrow-right">›</div>
-        </div>
-
-        <button class="action-pill-btn" onclick="triggerConversion()">⚡ Начать конвертацию APK</button>
-        <input type="file" id="fileInput" accept=".apk">
-        <input type="file" id="dirInput" webkitdirectory directory style="display:none;">
-
-        <div class="logs-container" id="logsBox">[System] Готово к работе в AMOLED стиле...</div>
-    </div>
-
-    <div class="bottom-nav-container">
-        <div class="bottom-capsule-bar">
-            <div class="active-indicator" id="navIndicator" style="transform: translateX(0%);"></div>
-            
-            <button class="nav-item active" onclick="switchTab(0, 'iconsTab')">
-                <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                Иконки
-            </button>
-            <button class="nav-item" onclick="switchTab(1, 'textTab')">
-                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                Текст
-            </button>
-            <button class="nav-item" onclick="switchTab(2, 'colorsTab')">
-                <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
-                Цвета
-            </button>
-            <button class="nav-item" onclick="switchTab(3, 'patchesTab')">
-                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                Патчи
-            </button>
-        </div>
-    </div>
-
+    <!-- Модальное окно подтверждения -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-card">
-            <div class="modal-header"><span id="modalTitle">Раздел</span><button class="close-modal" onclick="closeTab()">×</button></div>
-            <div class="modal-body" id="modalContent"></div>
+            <div class="modal-title">Подтвердите выбор</div>
+            <p style="margin-bottom: 8px;">Вы выбрали следующий файл для обработки:</p>
+            <div class="file-name-display" id="fileNameDisplay">filename.apk</div>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" id="cancelBtn">Отмена</button>
+                <button class="btn" id="confirmBtn">Готово</button>
+            </div>
         </div>
     </div>
 
     <script>
+        const selectBtn = document.getElementById('selectBtn');
         const fileInput = document.getElementById('fileInput');
-        const dirInput = document.getElementById('dirInput');
-        const mainTitle = document.getElementById('mainTitle');
-        const folderTitle = document.getElementById('folderTitle');
-        const logsBox = document.getElementById('logsBox');
-        const settingsDropdown = document.getElementById('settingsDropdown');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const confirmBtn = document.getElementById('confirmBtn');
+
         let selectedFile = null;
 
-        function toggleSettingsDropdown(e) { e.stopPropagation(); settingsDropdown.style.display = settingsDropdown.style.display === 'flex' ? 'none' : 'flex'; }
-        window.addEventListener('click', () => { settingsDropdown.style.display = 'none'; });
-        function execMenuAction(action) { settingsDropdown.style.display = 'none'; logMessage(`[Action] ${action}`); }
+        // Кнопка открытия выбора файла
+        selectBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
 
-        function triggerFileSelect() { fileInput.click(); }
-        function triggerDirSelect() { dirInput.click(); }
-        function triggerConversion() { if (!selectedFile) fileInput.click(); else logMessage(`[Process] Запуск: ${selectedFile.name}`); }
-
-        fileInput.addEventListener('change', (e) => { if (e.target.files.length > 0) { selectedFile = e.target.files[0]; mainTitle.textContent = selectedFile.name; logMessage(`[OK] Выбран APK: ${selectedFile.name}`); } });
-        dirInput.addEventListener('change', (e) => { if (e.target.files.length > 0) { folderTitle.textContent = `Папка: ${e.target.files[0].webkitRelativePath.split('/')[0]}`; logMessage(`[OK] Директория выбрана`); } });
-        
-        function logMessage(text) { logsBox.innerHTML += `<br>${text}`; logsBox.scrollTop = logsBox.scrollHeight; }
-
-        const modalOverlay = document.getElementById('modalOverlay'), modalTitle = document.getElementById('modalTitle'), modalContent = document.getElementById('modalContent'), navIndicator = document.getElementById('navIndicator'), navItems = document.querySelectorAll('.nav-item');
-        
-        function switchTab(index, tabName) {
-            navIndicator.style.transform = `translateX(${index * 100}%)`;
-            navItems.forEach((item, i) => i === index ? item.classList.add('active') : item.classList.remove('active'));
-            modalOverlay.style.display = 'flex';
-            
-            if (tabName === 'iconsTab') {
-                modalTitle.textContent = "Иконки APK";
-                modalContent.innerHTML = `<p style="color:#888;font-size:13px;margin-bottom:12px;">Обнаруженные иконки:</p><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:15px;"><div class="card-capsule" style="margin:0;max-width:100%;text-align:center;display:block;padding:15px;"><div style="font-size:28px;">🖼️</div><div style="font-size:11px;margin-top:5px;">ic_launcher.png</div></div><div class="card-capsule" style="margin:0;max-width:100%;text-align:center;display:block;padding:15px;"><div style="font-size:28px;">⚙️</div><div style="font-size:11px;margin-top:5px;">ic_settings.png</div></div></div><button class="glass-btn primary" onclick="logMessage('[Icons] Загрузка...')">📂 Загрузить свою иконку</button>`;
-            } else if (tabName === 'textTab') {
-                modalTitle.textContent = "Поиск и замена текста";
-                modalContent.innerHTML = `<input type="text" class="glass-input" placeholder="Поиск строки..."><input type="text" class="glass-input" placeholder="Заменить на..."><button class="glass-btn primary" onclick="logMessage('[Text] Замена выполнена')">Найти и заменить</button>`;
-            } else if (tabName === 'colorsTab') {
-                modalTitle.textContent = "Цвета: AMOLED";
-                modalContent.innerHTML = `<button class="glass-btn primary" onclick="logMessage('[Preset] Инверсия белого')">⚡ Умная инверсия белого</button>`;
-            } else if (tabName === 'patchesTab') {
-                modalTitle.textContent = "Патчи";
-                modalContent.innerHTML = `<div class="patch-item"><div><b>Изменить Package Name</b><br><small style="color:#888;">Клонирование ID</small></div><button class="glass-btn primary" style="width:auto;padding:6px 12px;margin:0;" onclick="logMessage('[Patch] Package Name')">Изменить</button></div>`;
+        // Обработка выбора файла через системный диалог
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files.length > 0) {
+                selectedFile = e.target.files[0];
+                fileNameDisplay.textContent = selectedFile.name;
+                modalOverlay.classList.add('active');
             }
-        }
-        function closeTab() { modalOverlay.style.display = 'none'; }
-        modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeTab(); });
+        });
+
+        // Кнопка отмены в модалке
+        cancelBtn.addEventListener('click', () => {
+            modalOverlay.classList.remove('icon-active') || modalOverlay.classList.remove('active');
+            fileInput.value = '';
+            selectedFile = null;
+        });
+
+        // Кнопка подтверждения в модалке
+        confirmBtn.addEventListener('click', () => {
+            if (selectedFile) {
+                alert('Файл "' + selectedFile.name + '" успешно принят в работу!');
+                // Здесь будет дальнейшая логика отправки файла на обработку
+            }
+            modalOverlay.classList.remove('active');
+            fileInput.value = '';
+        });
     </script>
-
-
-
-
-<!-- Модальное окно быстрых инструментов -->
-<div id="conversionToolsModal" class="modal-overlay" onclick="if(event.target === this) closeConversionModal();" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; padding: 20px; cursor: pointer;">
-  <div class="modal-content" style="background: #121212; border: 1px solid rgba(255, 152, 0, 0.35); border-radius: 16px; width: 100%; max-width: 360px; padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.6);">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-      <h3 style="color: #fff; font-size: 16px; margin: 0; font-family: inherit;">Быстрые инструменты</h3>
-      <button onclick="closeConversionModal()" style="background: none; border: none; color: #888; font-size: 24px; cursor: pointer; padding: 0;">&times;</button>
-    </div>
-    <div style="display: flex; flex-direction: column; gap: 10px;">
-      <button onclick="alert('Собрать и подписать APK'); closeConversionModal();" style="background: #0B0B0B; color: #fff; border: 1px solid #333; border-radius: 12px; padding: 14px 16px; text-align: left; font-size: 14px; display: flex; align-items: center; gap: 10px; width: 100%; cursor: pointer;">
-        ⚡ Собрать и подписать APK
-      </button>
-      <button onclick="alert('Очистить кэш'); closeConversionModal();" style="background: #0B0B0B; color: #fff; border: 1px solid #333; border-radius: 12px; padding: 14px 16px; text-align: left; font-size: 14px; display: flex; align-items: center; gap: 10px; width: 100%; cursor: pointer;">
-        🧹 Очистить кэш
-      </button>
-      <button onclick="alert('Выбрать профиль оптимизации'); closeConversionModal();" style="background: #0B0B0B; color: #fff; border: 1px solid #333; border-radius: 12px; padding: 14px 16px; text-align: left; font-size: 14px; display: flex; align-items: center; gap: 10px; width: 100%; cursor: pointer;">
-        ⚙️ Выбрать профиль оптимизации
-      </button>
-      <button onclick="alert('Открыть папку готовых APK'); closeConversionModal();" style="background: #0B0B0B; color: #fff; border: 1px solid #333; border-radius: 12px; padding: 14px 16px; text-align: left; font-size: 14px; display: flex; align-items: center; gap: 10px; width: 100%; cursor: pointer;">
-        📂 Открыть папку готовых APK
-      </button>
-    </div>
-  </div>
-</div>
-
-<script>
-function openConversionModal() {
-    const modal = document.getElementById("conversionToolsModal");
-    if (modal) modal.style.display = "flex";
-}
-function closeConversionModal() {
-    const modal = document.getElementById("conversionToolsModal");
-    if (modal) modal.style.display = "none";
-}
-
-// Точечная привязка клика исключительно к кнопке "Начать конвертацию APK"
-document.addEventListener("DOMContentLoaded", () => {
-    const allElements = document.querySelectorAll("button, div, span");
-    allElements.forEach(el => {
-        // Проверяем, что это именно кнопка конвертации, а не соседние блоки
-        if (el.childNodes.length <= 2 && el.textContent && el.textContent.includes("Начать конвертацию APK")) {
-            el.style.cursor = "pointer";
-            el.onclick = function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                openConversionModal();
-            };
-        }
-    });
-});
-</script>
-
-
-<!-- Выбор APK с подтверждением -->
-<input type="file" id="realApkInput" accept=".apk" style="display: none;" onchange="handleApkSelection(event)">
-
-<div id="apkConfirmModal" class="modal-overlay" onclick="if(event.target === this) closeApkConfirmModal();" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 10000; align-items: center; justify-content: center; padding: 20px;">
-  <div class="modal-content" style="background: #121212; border: 1px solid rgba(255, 152, 0, 0.35); border-radius: 16px; width: 100%; max-width: 360px; padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.6);">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-      <h3 style="color: #fff; font-size: 16px; margin: 0; font-family: inherit;">Подтверждение APK</h3>
-      <button onclick="closeApkConfirmModal()" style="background: none; border: none; color: #888; font-size: 24px; cursor: pointer; padding: 0;">&times;</button>
-    </div>
-    <p id="selectedApkName" style="color: #ccc; font-size: 14px; margin-bottom: 20px; word-break: break-all; line-height: 1.4;"></p>
-    <div style="display: flex; gap: 10px;">
-      <button onclick="closeApkConfirmModal()" style="flex: 1; background: #0B0B0B; color: #aaa; border: 1px solid #333; border-radius: 10px; padding: 12px; cursor: pointer; font-size: 14px;">Отмена</button>
-      <button onclick="confirmApkSelection()" style="flex: 1; background: #ff9800; color: #000; border: none; border-radius: 10px; padding: 12px; cursor: pointer; font-size: 14px; font-weight: bold;">Подтвердить</button>
-    </div>
-  </div>
-</div>
-
-<script>
-let pendingApkFile = null;
-
-function triggerApkSelect() {
-    document.getElementById("realApkInput").click();
-}
-
-function handleApkSelection(event) {
-    const file = event.target.files[0];
-    if (file) {
-        pendingApkFile = file;
-        const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
-        document.getElementById("selectedApkNameinnerHTML").innerHTML = "";
-        document.getElementById("selectedApkName").textContent = "Выбран файл: " + file.name + " (" + sizeMb + " MB). Подтверждаете выбор?";
-        document.getElementById("apkConfirmModal").style.display = "flex";
-    }
-}
-
-function closeApkConfirmModal() {
-    document.getElementById("apkConfirmModal").style.display = "none";
-    pendingApkFile = null;
-    document.getElementById("realApkInput").value = "";
-}
-
-function confirmApkSelection() {
-    if (pendingApkFile) {
-        // Успешное подтверждение
-        alert("APK успешно принят в работу: " + pendingApkFile.name);
-    }
-    closeApkConfirmModal();
-}
-
-// Привязываем клик к блоку "Целевой APK" в интерфейсе
-document.addEventListener("DOMContentLoaded", () => {
-    const allDivs = document.querySelectorAll("div, button");
-    allDivs.forEach(el => {
-        if (el.textContent && el.textContent.includes("Целевой APK") && el.childNodes.length <= 4) {
-            el.style.cursor = "pointer";
-            el.onclick = function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                triggerApkSelect();
-            };
-        }
-    });
-});
-</script>
-
 </body>
 </html>
-
