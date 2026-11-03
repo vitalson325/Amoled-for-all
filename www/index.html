@@ -54,9 +54,9 @@
         #fileInput, #dirInput { display: none; }
 
         .bottom-nav-container { position: fixed; bottom: 15px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 100; pointer-events: none; }
-        .bottom-capsule-bar { width: 100%; max-width: 380px; height: 68px; background: rgba(12, 12, 14, 0.92); backdrop-filter: blur(16px); border: 1px solid var(--border-color); border-radius: 34px; display: flex; align-items: center; justify-content: space-around; position: relative; padding: 0 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.9); pointer-events: auto; }
-        
-        .active-indicator { position: absolute; top: 6px; bottom: 6px; width: calc(25% - 6px); background: #18181c; border: 1px solid var(--accent-gold); border-radius: 26px; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .bottom-capsule-bar { width: 100%; max-width: 380px; height: 68px; background: rgba(12, 12, 14, 0.92); backdrop-filter: blur(16px); border: 1px solid var(--border-color); border-radius: 34px; display: flex; align-items: center; position: relative; padding: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.9); pointer-events: auto; }
+
+        .active-indicator { position: absolute; top: 4px; bottom: 4px; width: calc(25% - 2px); left: 4px; background: #18181c; border: 1px solid var(--accent-gold); border-radius: 26px; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; background: transparent; border: none; color: var(--text-gray); cursor: pointer; flex: 1; height: 100%; font-size: 11px; position: relative; z-index: 2; transition: color 0.2s; }
         .nav-item.active { color: var(--accent-gold); font-weight: 600; }
