@@ -217,24 +217,27 @@
         modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeTab(); });
     </script>
 
-<!-- Модальное окно быстрых инструментов конвертации -->
-<div id="conversionToolsModal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
-  <div class="modal-content" style="background: #121212; border: 1px solid #333; border-radius: 16px; width: 100%; max-width: 360px; padding: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.5);">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <h3 style="color: #fff; font-size: 18px; margin: 0; font-family: inherit;">Быстрые инструменты</h3>
-      <button onclick="closeConversionModal()" style="background: none; border: none; color: #888; font-size: 20px; cursor: pointer;">&times;</button>
+
+
+
+<!-- Модальное окно быстрых инструментов -->
+<div id="conversionToolsModal" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+  <div class="modal-content" style="background: #121212; border: 1px solid rgba(255, 152, 0, 0.35); border-radius: 16px; width: 100%; max-width: 360px; padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.6);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <h3 style="color: #fff; font-size: 16px; margin: 0; font-family: inherit;">Быстрые инструменты</h3>
+      <button onclick="closeConversionModal()" style="background: none; border: none; color: #888; font-size: 24px; cursor: pointer; padding: 0;">&times;</button>
     </div>
-    <div style="display: flex; flex-direction: column; gap: 12px;">
-      <button onclick="alert('Собрать и подписать APK')" style="background: #1e1e1e; color: #fff; border: 1px solid #333; border-radius: 12px; padding: 14px 16px; text-align: left; font-size: 14px; display: flex; align-items: center; gap: 10px; cursor: pointer;">
-        ⚡ Собрать и подписать APK <span style="font-size: 11px; color: #f39c12; margin-left: auto;">Build & Sign</span>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <button onclick="alert('Собрать и подписать APK'); closeConversionModal();" style="background: #1a1a1a; color: #fff; border: 1px solid #333; border-radius: 12px; padding: 14px 16px; text-align: left; font-size: 14px; display: flex; align-items: center; gap: 10px; width: 100%; cursor: pointer;">
+        ⚡ Собрать и подписать APK
       </button>
-      <button onclick="alert('Очистить кэш')" style="background: #1e1e1e; color: #fff; border: 1px solid #333; border-radius: 12px; padding: 14px 16px; text-align: left; font-size: 14px; display: flex; align-items: center; gap: 10px; cursor: pointer;">
+      <button onclick="alert('Очистить кэш'); closeConversionModal();" style="background: #1a1a1a; color: #fff; border: 1px solid #333; border-radius: 12px; padding: 14px 16px; text-align: left; font-size: 14px; display: flex; align-items: center; gap: 10px; width: 100%; cursor: pointer;">
         🧹 Очистить кэш
       </button>
-      <button onclick="alert('Выбрать профиль оптимизации')" style="background: #1e1e1e; color: #fff; border: 1px solid #333; border-radius: 12px; padding: 14px 16px; text-align: left; font-size: 14px; display: flex; align-items: center; gap: 10px; cursor: pointer;">
+      <button onclick="alert('Выбрать профиль оптимизации'); closeConversionModal();" style="background: #1a1a1a; color: #fff; border: 1px solid #333; border-radius: 12px; padding: 14px 16px; text-align: left; font-size: 14px; display: flex; align-items: center; gap: 10px; width: 100%; cursor: pointer;">
         ⚙️ Выбрать профиль оптимизации
       </button>
-      <button onclick="alert('Открыть папку готовых APK')" style="background: #1e1e1e; color: #fff; border: 1px solid #333; border-radius: 12px; padding: 14px 16px; text-align: left; font-size: 14px; display: flex; align-items: center; gap: 10px; cursor: pointer;">
+      <button onclick="alert('Открыть папку готовых APK'); closeConversionModal();" style="background: #1a1a1a; color: #fff; border: 1px solid #333; border-radius: 12px; padding: 14px 16px; text-align: left; font-size: 14px; display: flex; align-items: center; gap: 10px; width: 100%; cursor: pointer;">
         📂 Открыть папку готовых APK
       </button>
     </div>
@@ -251,11 +254,13 @@ function closeConversionModal() {
     if (modal) modal.style.display = "none";
 }
 
-// Перехватываем клик по кнопке конвертации с молнией
+// Точечная привязка клика исключительно к кнопке "Начать конвертацию APK"
 document.addEventListener("DOMContentLoaded", () => {
-    const buttons = document.querySelectorAll("button, div, a");
-    buttons.forEach(el => {
-        if (el.textContent && el.textContent.includes("Начать конвертацию APK")) {
+    const allElements = document.querySelectorAll("button, div, span");
+    allElements.forEach(el => {
+        // Проверяем, что это именно кнопка конвертации, а не соседние блоки
+        if (el.childNodes.length <= 2 && el.textContent && el.textContent.includes("Начать конвертацию APK")) {
+            el.style.cursor = "pointer";
             el.onclick = function(e) {
                 e.preventDefault();
                 e.stopPropagation();
